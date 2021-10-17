@@ -5,7 +5,7 @@
 
 var mymap = L.map('mapid', {
     zoomSnap: 0.5,
-	maxZoom: 10.5,
+	maxZoom: 10.9,
 	minZoom: 6,
     zoomControl: false,
     renderer: L.canvas(),
@@ -131,11 +131,40 @@ mymap.getPane('labels').style.pointerEvents = 'none';
 
 var positronLabels = L.TileLayer.boundaryCanvas('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
 		attribution: 'Source : Plan Cadastral Informatisé, DGFiP, 2020 &copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-		maxZoom: 11,
-		minZoom: 7,
+		maxZoom: 12,
+		minZoom: 7.5,
 		pane: 'labels',
-		boundary: grid_deps
+		boundary: grid_zt
 	}).addTo(mymap);
+
+
+////////////////////////////
+////// contours deps
+////////////////////////////
+
+mymap.createPane('deps');
+
+mymap.getPane('deps').style.zIndex = 400;
+
+// Layers in this pane are non-interactive and do not obscure mouse/touch events
+mymap.getPane('deps').style.onEachFeature = 'none';
+
+function style_deps(feature) {
+	return {
+		fillColor: "#ffffff",
+		weight: 0.4,
+		opacity: 0.6,
+		color: '#7f7f7f',
+		fillOpacity: 0, 
+	};
+}
+
+var contours_deps = L.geoJson([grid_deps], {
+
+	style: style_deps,
+	interactive :false,
+	pane: 'deps'
+}).addTo(mymap);
 
 ////////////////////////////
 ////// appel data
@@ -253,7 +282,7 @@ densitelegend.onAdd = function (map) {
 ////////////////////////////
 
 var type_choro = {
-	"Ratio piscines par logement": grid_r,
+	"Piscines pour 100 logements": grid_r,
 	"Densité de piscines au km²": grid_d
 	};
 	

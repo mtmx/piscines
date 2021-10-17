@@ -13,8 +13,6 @@ html, body, #mapid {
 	font-size: .98em;
 }
 
-.leaflet-activePane{z-index:10;}
-.leaflet-inactivePane{z-index:3}
 
 /* -------------------------------------------------------------------------- */
 /* 								LEGENDE							   	 		  */													
