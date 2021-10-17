@@ -19,37 +19,10 @@ mymap.on('drag', function() {
 	mymap.panInsideBounds(bounds, { animate: false });
 });
 
-/* L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-attribution: 'Source : Plan Cadastral Informatisé, DGFiP, 2020 &copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-maxZoom: 11,
-minZoom: 8
-}).addTo(mymap); */
-
-// var positronLabels = L.TileLayer.boundaryCanvas('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
-// 		attribution: 'Source : Plan Cadastral Informatisé, DGFiP, 2020 &copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-// 		maxZoom: 11,
-// 		minZoom: 6,
-// 		boundary: grid_deps
-// 	}).addTo(mymap);
-
 
 // GeoJSON layer (lambert 93)
 proj4.defs("EPSG:2154","+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
 
-
-/* L.tileLayer('', {
-maxZoom: 10,
-minZoom: 6, 
-}).addTo(mymap); */
-
-/* L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-maxZoom: 11,
-minZoom: 6,
-apikey: 'choisirgeoportail',
-format: 'image/png',
-style: 'normal' 
-}).addTo(mymap); */
 
 // bouton zoom emprise max
 mymap.addControl(new L.Control.ZoomMin({position:'topleft',
@@ -112,9 +85,7 @@ function nombreFormat(x) {
 info.update = function (props) {
 	this._div.innerHTML = '<h4>Informations sur le carreau :</h4>' +  (props ?
 		"<p>" + "Commune principale : " + "<br>"  +  '<big> <b>' + props.LIBGEO + '</big></b><br />' + "<br>" +
-		// "Population : " + nombreFormat(props.population) + ' habitants' + "<br>" +
 		nombreFormat(props.nb_piscines) + ' piscines' + "<br>" + // "<br>" +
-		// nombreFormat(props.nb_logts) + ' logements' + "<br>" 
 		"<small><i>" + (props.pct_piscines_logts) + ' piscines pour 100 logements' + "</small></i>" + "<br>" +
 		"<small><i>" + (props.densite_piscines) + ' piscines au km²' + "</small></i>" + "<br>" 
 		: 'Cliquez sur un carreau');
@@ -126,12 +97,6 @@ info.addTo(mymap);
 function highlightFeature(e) {
 	var layer = e.target;
 
-/* 	layer.setStyle({
-		weight: 0.5,
-		color: 'white',
-		dashArray: '',
-		fillOpacity: 0
-	}); */
 
 	if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
 		layer.bringToFront();
@@ -139,29 +104,6 @@ function highlightFeature(e) {
 
 	info.update(layer.feature.properties);
 }
-
-/* function clickFeature(e) {
-	var layer = e.target;
-
-	layer.setStyle({
-		weight: 0.3,
-		color: 'red',
-		dashArray: '',
-		fillOpacity: 1
-	});
-
-	if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-		layer.bringToFront();
-	}
-
-	info.update(layer.feature.properties);
-} */
-
-
-/* function resetHighlight(e) {
-	grid.resetStyle(e.target);
-	info.update();
-} */
 
 function zoomToFeature(e) {
 	mymap.fitBounds(e.target.getBounds());
@@ -182,21 +124,17 @@ function onEachFeature(feature, layer) {
 
 mymap.createPane('labels');
 
-// This pane is above markers but below popups
 mymap.getPane('labels').style.zIndex = 400;
 
 // Layers in this pane are non-interactive and do not obscure mouse/touch events
 mymap.getPane('labels').style.pointerEvents = 'none';
 
-// var zoneaffichage = turf.buffer(grid_deps, 15, {units: 'miles'});
-
 var positronLabels = L.TileLayer.boundaryCanvas('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
 		attribution: 'Source : Plan Cadastral Informatisé, DGFiP, 2020 &copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
 		maxZoom: 11,
-		minZoom: 8,
+		minZoom: 7,
 		pane: 'labels',
 		boundary: grid_deps
-		// boundary: zoneaffichage
 	}).addTo(mymap);
 
 ////////////////////////////
@@ -204,30 +142,11 @@ var positronLabels = L.TileLayer.boundaryCanvas('http://{s}.basemaps.cartocdn.co
 ////////////////////////////
 
 
-/* grid = L.geoJSON([grid_piscines], {
-
-	style: style_grid,
-	onEachFeature: onEachFeature
-}).addTo(mymap); */
-
-
-/* var grid_r = L.geoJSON([grid_piscines], {
-
-	style: style_grid_ratio,
-	onEachFeature: onEachFeature
-}).addTo(mymap);
-
-var grid_d = L.geoJSON([grid_piscines], {
-
-	style: style_grid_densite,
-	onEachFeature: onEachFeature
-}) */
 
 var grid_r = L.Proj.geoJson([grid_piscines], {
 
 	style: style_grid_ratio,
-	onEachFeature: onEachFeature,
-	// pane: 'grid'
+	onEachFeature: onEachFeature
 }).addTo(mymap);
 
 var grid_d = L.Proj.geoJson([grid_piscines], {
@@ -236,25 +155,7 @@ var grid_d = L.Proj.geoJson([grid_piscines], {
 	onEachFeature: onEachFeature
 })
 
-////////////////////////////
-////// contours départements
-////////////////////////////
 
-function style_deps(feature) {
-    return {
-        fillColor: "white",
-        weight: 0.5,
-        opacity: 0.6,
-        color: '#7f7f7f',
-        fillOpacity: 0
-    };
-}
-
-/* var grid_deps = L.Proj.geoJson([grid_deps], {
-
-	style: style_deps,
-	pane: 'deps'
-}).addTo(mymap); */
 
 ////////////////////////////
 ////// styles des points
