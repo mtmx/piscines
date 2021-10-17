@@ -5,7 +5,7 @@
 
 var mymap = L.map('mapid', {
     zoomSnap: 0.5,
-	maxZoom: 10.9,
+	maxZoom: 10,
 	minZoom: 6,
     zoomControl: false,
     renderer: L.canvas(),
@@ -19,10 +19,8 @@ mymap.on('drag', function() {
 	mymap.panInsideBounds(bounds, { animate: false });
 });
 
-
 // GeoJSON layer (lambert 93)
 proj4.defs("EPSG:2154","+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
-
 
 // bouton zoom emprise max
 mymap.addControl(new L.Control.ZoomMin({position:'topleft',
@@ -42,6 +40,25 @@ L.control.locate({
     }
 }).addTo(mymap);
 
+////////////////////////////
+////// labels villes
+////////////////////////////
+
+mymap.createPane('labels');
+
+mymap.getPane('labels').style.zIndex = 400;
+
+// Layers in this pane are non-interactive and do not obscure mouse/touch events
+mymap.getPane('labels').style.pointerEvents = 'none';
+
+var positronLabels = L.TileLayer.boundaryCanvas('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
+		attribution: 'Source : Plan Cadastral Informatisé, DGFiP, 2020 &copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+		maxZoom: 12,
+		minZoom: 7.5,
+		pane: 'labels',
+		boundary: grid_zt
+	}).addTo(mymap);
+	
 ////////////////////////////
 ////// search
 ////////////////////////////
@@ -97,13 +114,13 @@ info.addTo(mymap);
 function highlightFeature(e) {
 	var layer = e.target;
 
-
 	if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
 		layer.bringToFront();
 	}
 
 	info.update(layer.feature.properties);
 }
+
 
 function zoomToFeature(e) {
 	mymap.fitBounds(e.target.getBounds());
@@ -119,27 +136,7 @@ function onEachFeature(feature, layer) {
 
 
 ////////////////////////////
-////// ordre layers
-////////////////////////////
-
-mymap.createPane('labels');
-
-mymap.getPane('labels').style.zIndex = 400;
-
-// Layers in this pane are non-interactive and do not obscure mouse/touch events
-mymap.getPane('labels').style.pointerEvents = 'none';
-
-var positronLabels = L.TileLayer.boundaryCanvas('http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png', {
-		attribution: 'Source : Plan Cadastral Informatisé, DGFiP, 2020 &copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-		maxZoom: 12,
-		minZoom: 7.5,
-		pane: 'labels',
-		boundary: grid_zt
-	}).addTo(mymap);
-
-
-////////////////////////////
-////// contours deps
+////// contours départements
 ////////////////////////////
 
 mymap.createPane('deps');
@@ -150,13 +147,13 @@ mymap.getPane('deps').style.zIndex = 400;
 mymap.getPane('deps').style.onEachFeature = 'none';
 
 function style_deps(feature) {
-	return {
-		fillColor: "#ffffff",
-		weight: 0.4,
-		opacity: 0.6,
-		color: '#7f7f7f',
-		fillOpacity: 0, 
-	};
+    return {
+        fillColor: "#ffffff",
+        weight: 0.5,
+        opacity: 0.6,
+        color: '#7f7f7f',
+        fillOpacity: 0, 
+    };
 }
 
 var contours_deps = L.geoJson([grid_deps], {
@@ -166,22 +163,28 @@ var contours_deps = L.geoJson([grid_deps], {
 	pane: 'deps'
 }).addTo(mymap);
 
+
 ////////////////////////////
 ////// appel data
 ////////////////////////////
 
 
+mymap.createPane('grid');
+
+mymap.getPane('grid').style.zIndex = 100;
 
 var grid_r = L.Proj.geoJson([grid_piscines], {
 
 	style: style_grid_ratio,
-	onEachFeature: onEachFeature
+	onEachFeature: onEachFeature,
+	pane: 'grid'
 }).addTo(mymap);
 
 var grid_d = L.Proj.geoJson([grid_piscines], {
 
 	style: style_grid_densite,
-	onEachFeature: onEachFeature
+	onEachFeature: onEachFeature,
+	pane: 'grid'
 })
 
 
@@ -282,7 +285,7 @@ densitelegend.onAdd = function (map) {
 ////////////////////////////
 
 var type_choro = {
-	"Piscines pour 100 logements": grid_r,
+	"Ratio piscines par logement": grid_r,
 	"Densité de piscines au km²": grid_d
 	};
 	
