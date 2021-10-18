@@ -130,6 +130,8 @@ function highlightFeature(e) {
 
 function zoomToFeature(e) {
 	mymap.fitBounds(e.target.getBounds());
+	var layer = e.target;
+	info.update(layer.feature.properties);
 }
 
 function onEachFeature(feature, layer) {
