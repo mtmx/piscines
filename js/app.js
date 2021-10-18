@@ -40,6 +40,12 @@ L.control.locate({
     }
 }).addTo(mymap);
 
+// gestion touche mobile
+if (L.Browser.touch) {
+	L.control.touchHover().addTo(mymap);
+}
+
+
 ////////////////////////////
 ////// labels villes
 ////////////////////////////
