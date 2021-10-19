@@ -10,7 +10,7 @@ html, body, #mapid {
 	display: block;
   	overflow-y: hidden;
 	font-family: 'abel-regular', Arial, Helvetica, sans-serif;
-	font-size: .98em;
+	font-size: .9em;
 }
 
 
@@ -23,6 +23,7 @@ html, body, #mapid {
 	/* text-align: right;
 	float: right; */
 	position: topleft;
+	font-size: .95em;
 	background: rgba(255,255,255,0.8); 
 	box-shadow: 0 0 15px rgba(0,0,0,0.2); 
 	border-radius: 5px; }
@@ -30,6 +31,7 @@ html, body, #mapid {
 
 .legend {
     line-height: 14px;
+	font-size: .8em;
     color: #555;
 	background: white; 
 	padding: 5px;
@@ -37,13 +39,14 @@ html, body, #mapid {
 	border-color: #777;
 	border-width: 10px;
 	box-shadow: 0 0 5px rgba(0,0,0,0.2); 
+	/* font-size: .8em; */
 }
 .legend i {
 	background: white; 
 	box-shadow: 0 0 5px rgba(0,0,0,0.2); 
 	border-radius: 10px; 
-    width: 14px;
-    height: 14px;
+    width: 10px;
+    height: 10px;
     float: left;
     margin-right: 8px;
     opacity: 1;
